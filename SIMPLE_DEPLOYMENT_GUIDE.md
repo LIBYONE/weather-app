@@ -1,104 +1,104 @@
-# 简易部署指南：让其他设备访问您的天气查询网站
+# Simple Deployment Guide: Making Your Weather App Accessible to Other Devices
 
-这个指南提供了几种简单的方法，让您的天气查询网站能够被其他设备访问。
+This guide provides several simple methods to make your weather query website accessible to other devices.
 
-## 方法一：使用 Vercel 部署（最推荐）
+## Method 1: Using Vercel (Most Recommended)
 
-[Vercel](https://vercel.com/) 是一个免费且易用的平台，特别适合部署 React 应用。
+[Vercel](https://vercel.com/) is a free and easy-to-use platform, especially suitable for deploying React applications.
 
-### 步骤：
+### Steps:
 
-1. 注册 Vercel 账号（可以使用 GitHub 账号直接登录）
-2. 安装 Git（如果尚未安装）
-3. 将您的项目上传到 GitHub：
+1. Register for a Vercel account (you can log in directly with your GitHub account)
+2. Install Git (if not already installed)
+3. Upload your project to GitHub:
    ```bash
-   # 在项目根目录下初始化 Git 仓库
+   # Initialize Git repository in the project root directory
    git init
    git add .
-   git commit -m "初始提交"
+   git commit -m "Initial commit"
    
-   # 在 GitHub 创建仓库后，关联并推送
-   git remote add origin https://github.com/您的用户名/weather-app.git
+   # After creating a repository on GitHub, link and push
+   git remote add origin https://github.com/your-username/weather-app.git
    git push -u origin main
    ```
-4. 在 Vercel 中导入您的 GitHub 仓库
-5. 在部署设置中添加环境变量：
-   - 名称：`VITE_APP_WEATHER_API_KEY`
-   - 值：`ceff502997c2ac12cd9da434279f8aa1`（您的 API 密钥）
-6. 点击部署，几分钟后您将获得一个公开的 URL（例如：`https://weather-app-your-username.vercel.app`）
+4. Import your GitHub repository in Vercel
+5. Add environment variables in the deployment settings:
+   - Name: `VITE_APP_WEATHER_API_KEY`
+   - Value: `ceff502997c2ac12cd9da434279f8aa1` (your API key)
+6. Click deploy, and in a few minutes you will get a public URL (e.g., `https://weather-app-your-username.vercel.app`)
 
-## 方法二：使用 Netlify 部署
+## Method 2: Using Netlify
 
-[Netlify](https://www.netlify.com/) 也是一个优秀的静态网站托管平台。
+[Netlify](https://www.netlify.com/) is also an excellent static website hosting platform.
 
-### 步骤：
+### Steps:
 
-1. 注册 Netlify 账号
-2. 点击 "Add new site" > "Deploy manually"
-3. 将 `dist` 目录拖放到上传区域
-4. 在站点设置中添加环境变量：
-   - 名称：`VITE_APP_WEATHER_API_KEY`
-   - 值：`ceff502997c2ac12cd9da434279f8aa1`（您的 API 密钥）
-5. 部署完成后，您将获得一个公开的 URL（例如：`https://your-site-name.netlify.app`）
+1. Register for a Netlify account
+2. Click "Add new site" > "Deploy manually"
+3. Drag and drop the `dist` directory to the upload area
+4. Add environment variables in the site settings:
+   - Name: `VITE_APP_WEATHER_API_KEY`
+   - Value: `ceff502997c2ac12cd9da434279f8aa1` (your API key)
+5. After deployment is complete, you will get a public URL (e.g., `https://your-site-name.netlify.app`)
 
-## 方法三：使用 GitHub Pages 部署
+## Method 3: Using GitHub Pages
 
-### 步骤：
+### Steps:
 
-1. 修改 `vite.config.js` 文件，添加正确的 base 配置：
+1. Modify the `vite.config.js` file, adding the correct base configuration:
    ```js
    export default defineConfig({
      plugins: [react()],
-     base: '/weather-app/', // 替换为您的仓库名
-     // 其他配置...
+     base: '/weather-app/', // Replace with your repository name
+     // Other configurations...
    })
    ```
 
-2. 重新构建项目：
+2. Rebuild the project:
    ```bash
    npm run build
    ```
 
-3. 将项目上传到 GitHub 仓库
+3. Upload the project to a GitHub repository
 
-4. 在仓库设置中启用 GitHub Pages，选择 gh-pages 分支或 main 分支的 docs 文件夹
+4. Enable GitHub Pages in the repository settings, selecting the gh-pages branch or the docs folder of the main branch
 
-5. 您的网站将在 `https://您的用户名.github.io/weather-app/` 可访问
+5. Your website will be accessible at `https://your-username.github.io/weather-app/`
 
-## 方法四：使用临时公网映射工具（适合临时分享）
+## Method 4: Using Temporary Public Network Mapping Tools (Suitable for Temporary Sharing)
 
-如果您只是想临时让他人访问您的网站，可以使用以下工具：
+If you just want to temporarily allow others to access your website, you can use the following tools:
 
-1. [ngrok](https://ngrok.com/)：
-   - 注册并下载 ngrok
-   - 运行您的本地开发服务器：`npm run dev`
-   - 在新终端中运行：`ngrok http 5174`（使用您的本地端口）
-   - ngrok 将提供一个公网可访问的 URL
+1. [ngrok](https://ngrok.com/):
+   - Register and download ngrok
+   - Run your local development server: `npm run dev`
+   - Run in a new terminal: `ngrok http 5174` (use your local port)
+   - ngrok will provide a publicly accessible URL
 
-2. [localtunnel](https://localtunnel.github.io/www/)：
-   - 安装：`npm install -g localtunnel`
-   - 运行您的本地开发服务器：`npm run dev`
-   - 在新终端中运行：`lt --port 5174`
-   - 获得一个公网可访问的 URL
+2. [localtunnel](https://localtunnel.github.io/www/):
+   - Install: `npm install -g localtunnel`
+   - Run your local development server: `npm run dev`
+   - Run in a new terminal: `lt --port 5174`
+   - Get a publicly accessible URL
 
-## 注意事项
+## Notes
 
-1. **API 密钥安全**：
-   - 在生产环境中，考虑使用代理服务器转发 API 请求，以进一步保护 API 密钥
-   - 永远不要在公开的代码仓库中暴露您的 API 密钥
+1. **API Key Security**:
+   - In a production environment, consider using a proxy server to forward API requests to further protect your API key
+   - Never expose your API key in public code repositories
 
-2. **CORS 问题**：
-   - 如果部署后遇到 CORS 问题，可能需要设置代理服务器或使用 CORS 代理服务
+2. **CORS Issues**:
+   - If you encounter CORS issues after deployment, you may need to set up a proxy server or use a CORS proxy service
 
-3. **API 使用限制**：
-   - 注意 OpenWeatherMap 免费计划的 API 调用限制
-   - 考虑实现缓存机制减少 API 调用次数
+3. **API Usage Limits**:
+   - Be aware of the API call limits of the OpenWeatherMap free plan
+   - Consider implementing caching mechanisms to reduce the number of API calls
 
-## 故障排除
+## Troubleshooting
 
-如果部署后网站无法正常工作：
+If the website does not work properly after deployment:
 
-1. 检查环境变量是否正确设置
-2. 查看浏览器控制台是否有错误信息
-3. 确认 API 密钥是否有效
-4. 检查构建日志是否有错误
+1. Check if environment variables are set correctly
+2. Check the browser console for error messages
+3. Confirm that the API key is valid
+4. Check the build logs for errors

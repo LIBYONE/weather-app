@@ -4,17 +4,17 @@ import './CurrentWeather.css'
 function CurrentWeather({ data }) {
   if (!data) return null
 
-  // API已返回摄氏度，不需要转换
+  // API returns temperature in Celsius, no conversion needed
   const roundTemperature = (temp) => {
     return Math.round(temp)
   }
 
-  // 获取天气图标URL
+  // Get weather icon URL
   const getWeatherIconUrl = (iconCode) => {
     return `https://openweathermap.org/img/wn/${iconCode}@2x.png`
   }
 
-  // 格式化日期时间
+  // Format date and time
   const formatDateTime = (timestamp) => {
     const date = new Date(timestamp * 1000)
     return date.toLocaleString('en-US', {

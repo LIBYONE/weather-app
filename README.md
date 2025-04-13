@@ -1,44 +1,117 @@
-# 天气查询网站
+# Weather Query Website
 
-这是一个简单的天气查询网站，用户可以输入城市名称，查看该城市的天气信息。
+## Project Summary
+This is a comprehensive weather query application that allows users to search for weather information by city name. The application provides current weather conditions, forecasts, and weather alerts in a user-friendly interface with both light and dark themes.
 
-## 功能
+## Software Purpose
+The purpose of this application is to provide users with accurate and timely weather information to help them plan their activities. It serves as a practical tool for checking weather conditions in various locations around the world, with special support for major international cities.
 
-- 用户输入城市名称，查询天气信息
-- 显示当前天气、温度、湿度、风速等信息
-- 显示未来几天的天气预报
-- 天气预警功能
-- 响应式设计，适配不同设备
+## Features
 
-## 技术栈
+- City-based weather search with autocomplete suggestions
+- Current weather display (temperature, humidity, wind speed, pressure, etc.)
+- Multi-day weather forecast with detailed information
+- Weather alerts and warnings when available
+- Recent search history with quick access buttons
+- Light/Dark theme toggle for comfortable viewing
+- Responsive design that adapts to different devices and screen sizes
+- Support for international cities with proper localization
 
-- 前端：React、CSS
-- API：OpenWeatherMap
+## Technology Stack
 
-## 本地开发
+- Frontend: React, CSS
+- State Management: React Hooks (useState, useEffect)
+- HTTP Client: Axios
+- Icons: React Icons
+- API: OpenWeatherMap
+- Build Tool: Vite
 
-1. 克隆项目到本地
-2. 安装依赖：`npm install`
-3. 配置环境变量：
-   - 复制 `.env.example` 为 `.env`
-   - 在 `.env` 文件中设置你的 OpenWeatherMap API 密钥
-4. 启动开发服务器：`npm run dev`
-5. 在浏览器中访问：`http://localhost:5173`
+## Project Structure
 
-## 部署网站（让所有人都能访问）
+```
+weather-app/
+├── public/            # Static assets
+├── src/
+│   ├── components/    # React components
+│   │   ├── CurrentWeather.jsx  # Current weather display
+│   │   ├── Forecast.jsx        # Weather forecast display
+│   │   ├── SearchBar.jsx       # Search functionality
+│   │   └── WeatherAlert.jsx    # Weather alerts display
+│   ├── services/      # API services
+│   │   └── weatherService.js   # Weather API integration
+│   ├── App.jsx        # Main application component
+│   └── main.jsx       # Application entry point
+├── .env.example       # Example environment variables
+└── package.json       # Project dependencies and scripts
+```
 
-要让所有人都能访问这个天气查询网站，你需要将其部署到公共可访问的服务器上：
+## Development Plan
 
-1. 构建项目：`npm run build`
-2. 将生成的 `dist` 目录部署到以下推荐的平台之一：
-   - [Vercel](https://vercel.com/)（推荐，简单易用）
-   - [Netlify](https://www.netlify.com/)（也很简单）
-   - [GitHub Pages](https://pages.github.com/)（免费托管）
+1. **Phase 1: Core Functionality** ✅
+   - Basic UI layout and components
+   - Weather data fetching from API
+   - Current weather display
 
-详细的部署步骤请参考项目中的 `DEPLOYMENT.md` 文件。
+2. **Phase 2: Enhanced Features** ✅
+   - Weather forecast implementation
+   - Search history functionality
+   - Weather alerts integration
 
-## 注意事项
+3. **Phase 3: UI/UX Improvements** ✅
+   - Light/Dark theme toggle
+   - Responsive design for all devices
+   - Loading states and error handling
 
-- 部署时必须正确设置环境变量 `VITE_APP_WEATHER_API_KEY`
-- 不要在代码中硬编码 API 密钥
-- 注意 OpenWeatherMap API 的使用限制
+4. **Phase 4: Optimization & Documentation** ✅
+   - Code refactoring and optimization
+   - Comprehensive documentation
+   - Deployment guides
+
+## Local Development
+
+1. Clone the project to your local machine
+2. Install dependencies: `npm install`
+3. Configure environment variables:
+   - Copy `.env.example` to `.env`
+   - Set your OpenWeatherMap API key in the `.env` file
+4. Start the development server: `npm run dev`
+5. Access in your browser: `http://localhost:5173`
+
+## Deploying the Website (Making it Accessible to Everyone)
+
+To make this weather query website accessible to everyone, you need to deploy it to a publicly accessible server:
+
+1. Build the project: `npm run build`
+2. Deploy the generated `dist` directory to one of the recommended platforms:
+   - [Vercel](https://vercel.com/) (recommended, simple to use)
+   - [Netlify](https://www.netlify.com/) (also simple)
+   - [GitHub Pages](https://pages.github.com/) (free hosting)
+
+For detailed deployment steps, please refer to the `DEPLOYMENT.md` file in the project.
+
+## Important Notes
+
+- The environment variable `VITE_APP_WEATHER_API_KEY` must be correctly set during deployment
+- Do not hardcode the API key in your code
+- Be aware of the usage limits of the OpenWeatherMap API
+- The application uses responsive design principles to work on various devices
+
+## Contributing
+
+Contributions to improve the Weather Query Website are welcome. Please follow these steps:
+
+1. Fork the repository
+2. Create a feature branch: `git checkout -b feature-name`
+3. Commit your changes: `git commit -m 'Add some feature'`
+4. Push to the branch: `git push origin feature-name`
+5. Submit a pull request
+
+## License
+
+This project is available for use under the MIT License.
+
+## Acknowledgements
+
+- Weather data provided by [OpenWeatherMap](https://openweathermap.org/)
+- Icons from [React Icons](https://react-icons.github.io/react-icons/)
+- Built with [React](https://reactjs.org/) and [Vite](https://vitejs.dev/)

@@ -60,7 +60,7 @@
   color: #3949ab;
 }
 
-/* 响应式调整 */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .forecast-container {
     padding-bottom: 15px;

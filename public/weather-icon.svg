@@ -10,10 +10,10 @@
     </linearGradient>
   </defs>
   
-  <!-- 太阳 -->
+  <!-- Sun -->
   <circle cx="32" cy="24" r="12" fill="url(#sunGradient)" />
   
-  <!-- 太阳光芒 -->
+  <!-- Sun rays -->
   <line x1="32" y1="8" x2="32" y2="4" stroke="#FFD600" stroke-width="2" stroke-linecap="round" />
   <line x1="32" y1="44" x2="32" y2="40" stroke="#FFD600" stroke-width="2" stroke-linecap="round" />
   <line x1="16" y1="24" x2="12" y2="24" stroke="#FFD600" stroke-width="2" stroke-linecap="round" />
@@ -23,6 +23,6 @@
   <line x1="21" y1="35" x2="18" y2="38" stroke="#FFD600" stroke-width="2" stroke-linecap="round" />
   <line x1="43" y1="35" x2="46" y2="38" stroke="#FFD600" stroke-width="2" stroke-linecap="round" />
   
-  <!-- 云 -->
+  <!-- Cloud -->
   <path d="M50,36c0-6.6-5.4-12-12-12c-5.2,0-9.6,3.3-11.3,8H26c-5.5,0-10,4.5-10,10s4.5,10,10,10h24c5.5,0,10-4.5,10-10 C60,40.5,55.5,36,50,36z" fill="url(#cloudGradient)" stroke="#CCCCCC" stroke-width="1" />
 </svg>

@@ -87,7 +87,7 @@ function SearchBar({ onSearch }) {
       setShowSuggestions(false)
     }
   }
-
+  
   // Close suggestion list when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -108,33 +108,23 @@ function SearchBar({ onSearch }) {
         <div className="search-input-container">
           <input
             type="text"
-            placeholder="Search any city in the world (e.g., Paris, Tokyo, Sydney)"
+            placeholder="Enter city name..."
             value={searchTerm}
             onChange={handleInputChange}
-            onFocus={() => {
-              // Show suggestions if there are any when input is focused
-              if (searchTerm.trim().length > 0) {
-                const filteredSuggestions = filterSuggestions(searchTerm)
-                setSuggestions(filteredSuggestions)
-                setShowSuggestions(filteredSuggestions.length > 0)
-              }
-            }}
-            autoComplete="off"
+            onFocus={() => setShowSuggestions(suggestions.length > 0)}
+            aria-label="Search city"
           />
-          {showSuggestions && suggestions.length > 0 && (
-            <ul className="suggestions-list">
+          {showSuggestions && (
+            <ul className="suggestions-list" ref={suggestionsRef}>
               {suggestions.map((city, index) => (
-                <li 
-                  key={index} 
-                  onClick={() => handleSelectSuggestion(city)}
-                >
+                <li key={index} onClick={() => handleSelectSuggestion(city)}>
                   {city}
                 </li>
               ))}
             </ul>
           )}
         </div>
-        <button type="submit">Search</button>
+        <button type="submit" aria-label="Search">Search</button>
       </form>
     </div>
   )

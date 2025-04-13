@@ -4,17 +4,17 @@ import './Forecast.css'
 function Forecast({ data }) {
   if (!data || !data.list) return null
 
-  // API已返回摄氏度，不需要转换
+  // API returns temperature in Celsius, no conversion needed
   const roundTemperature = (temp) => {
     return Math.round(temp)
   }
 
-  // 获取天气图标URL
+  // Get weather icon URL
   const getWeatherIconUrl = (iconCode) => {
     return `https://openweathermap.org/img/wn/${iconCode}.png`
   }
 
-  // 格式化日期
+  // Format date
   const formatDate = (timestamp) => {
     const date = new Date(timestamp * 1000)
     return date.toLocaleDateString('en-US', {
@@ -24,7 +24,7 @@ function Forecast({ data }) {
     })
   }
 
-  // 按天分组天气数据
+  // Group weather data by day
   const groupForecastByDay = () => {
     const grouped = {}
     
@@ -41,9 +41,9 @@ function Forecast({ data }) {
     return grouped
   }
 
-  // 获取每天的天气摘要
+  // Get daily weather summary
   const getDailySummary = (dayData) => {
-    // 计算平均温度、最高温度和最低温度
+    // Calculate average, maximum and minimum temperatures
     let sumTemp = 0
     let maxTemp = -Infinity
     let minTemp = Infinity
@@ -55,12 +55,12 @@ function Forecast({ data }) {
       maxTemp = Math.max(maxTemp, temp)
       minTemp = Math.min(minTemp, temp)
       
-      // 统计最常见的天气状况
+      // Count the most frequent weather conditions
       const weather = item.weather[0].main
       mostFrequentWeather[weather] = (mostFrequentWeather[weather] || 0) + 1
     })
     
-    // 找出出现次数最多的天气状况
+    // Find the most frequent weather condition
     let mainWeather = ''
     let maxCount = 0
     
@@ -71,7 +71,7 @@ function Forecast({ data }) {
       }
     }
     
-    // 找出代表性的天气图标（使用中午时段的图标）
+    // Find representative weather icon (using noon time icon)
     let iconCode = ''
     for (const item of dayData) {
       const hour = new Date(item.dt * 1000).getHours()
@@ -81,7 +81,7 @@ function Forecast({ data }) {
       }
     }
     
-    // 如果没找到中午时段，就使用第一个数据的图标
+    // If noon time icon not found, use the first data point's icon
     if (!iconCode && dayData.length > 0) {
       iconCode = dayData[0].weather[0].icon
     }
@@ -92,12 +92,12 @@ function Forecast({ data }) {
       minTemp,
       mainWeather,
       iconCode,
-      description: dayData[0].weather[0].description // 使用第一个数据点的描述
+      description: dayData[0].weather[0].description // Use the first data point's description
     }
   }
 
   const groupedForecast = groupForecastByDay()
-  const forecastDays = Object.keys(groupedForecast).slice(0, 5) // 限制为5天
+  const forecastDays = Object.keys(groupedForecast).slice(0, 5) // Limit to 5 days
 
   return (
     <div className="forecast">

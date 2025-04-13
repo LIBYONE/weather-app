@@ -7,6 +7,7 @@ import axios from 'axios';
 // In production: from hosting platform environment variables
 const API_KEY = import.meta.env.VITE_APP_WEATHER_API_KEY;
 const BASE_URL = 'https://api.openweathermap.org/data/2.5';
+const GEO_URL = 'https://api.openweathermap.org/geo/1.0';
 
 // Check if API key is available
 if (!API_KEY) {
@@ -174,7 +175,7 @@ const CITY_MAPPING = {
   'phnompenh': 'Phnom Penh,KH',
   'vientiane': 'Vientiane,LA',
   'ulaanbaatar': 'Ulaanbaatar,MN'
-  // 可以根据需要继续添加更多城市映射
+  // More city mappings can be added as needed
 };
 
 /**
@@ -224,8 +225,8 @@ export const fetchWeatherData = async (city) => {
       params: {
         q: processedCity,
         appid: API_KEY,
-        lang: 'en', // 使用英文返回结果
-        units: 'metric' // 使用摄氏度
+        lang: 'en', // Use English for results
+        units: 'metric' // Use Celsius
       }
     });
     
@@ -236,7 +237,7 @@ export const fetchWeatherData = async (city) => {
     return weatherData;
   } catch (error) {
     console.error('Failed to fetch current weather data:', error);
-    // 提供更详细的错误信息
+    // Provide more detailed error information
     if (error.response && error.response.status === 404) {
       throw new Error(`City "${city}" not found. Please check the spelling or try another city.`);
     } else if (error.response && error.response.status === 401) {
@@ -267,9 +268,9 @@ export const fetchForecastData = async (city) => {
       params: {
         q: processedCity,
         appid: API_KEY,
-        lang: 'en', // 使用英文返回结果
-        units: 'metric', // 使用摄氏度
-        cnt: 40 // 返回5天的3小时预报数据
+        lang: 'en', // Use English for results
+        units: 'metric', // Use Celsius
+        cnt: 40 // Return 5-day forecast data with 3-hour intervals
       }
     });
     
@@ -280,7 +281,7 @@ export const fetchForecastData = async (city) => {
     return forecastData;
   } catch (error) {
     console.error('Failed to fetch forecast data:', error);
-    // 提供更详细的错误信息
+    // Provide more detailed error information
     if (error.response && error.response.status === 404) {
       throw new Error(`City "${city}" not found. Please check the spelling or try another city.`);
     } else if (error.response && error.response.status === 401) {
@@ -321,7 +322,7 @@ export const fetchWeatherAlerts = async (lat, lon) => {
     return response.data.alerts || [];
   } catch (error) {
     console.error('Failed to fetch weather alerts data:', error);
-    // 仍然返回空数组，但记录更详细的错误信息
+    // Still return empty array, but log more detailed error information
     if (error.response && error.response.status === 401) {
       console.error('API key is invalid for weather alerts');
     } else if (error.response && error.response.status === 429) {
@@ -332,5 +333,242 @@ export const fetchWeatherAlerts = async (lat, lon) => {
       console.error(`Unable to fetch weather alerts data for coordinates (${lat},${lon})`);
     }
     return []; // Return empty array if fetch fails
+  }
+};
+
+/**
+ * Get hourly weather forecast data
+ * @param {string} city - City name
+ * @returns {Promise} - Promise returning hourly forecast data
+ */
+export const fetchHourlyForecastData = async (city) => {
+  try {
+    const processedCity = processCityName(city);
+    if (!processedCity) {
+      throw new Error('City name is required');
+    }
+    
+    // Use forecast interface to get more detailed hourly forecast data
+    // OpenWeatherMap's free API returns one data point every 3 hours
+    // Setting cnt=8 can get data for the next 24 hours (8 data points with 3-hour intervals)
+    const response = await axios.get(`${BASE_URL}/forecast`, {
+      params: {
+        q: processedCity,
+        appid: API_KEY,
+        lang: 'en',
+        units: 'metric',
+        cnt: 8 // Return forecast data for the next 24 hours (8 data points with 3-hour intervals)
+      }
+    });
+    
+    const forecastData = response.data;
+    forecastData.userInputCity = city.trim();
+    
+    return forecastData;
+  } catch (error) {
+    console.error('Failed to fetch hourly forecast data:', error);
+    if (error.response && error.response.status === 404) {
+      throw new Error(`City "${city}" not found. Please check the spelling or try another city.`);
+    } else if (error.response && error.response.status === 401) {
+      throw new Error('API key is invalid. Please check your configuration.');
+    } else if (error.response && error.response.status === 429) {
+      throw new Error('API rate limit exceeded. Please try again later.');
+    } else if (!navigator.onLine) {
+      throw new Error('No internet connection. Please check your network and try again.');
+    } else {
+      throw new Error(`Unable to fetch hourly forecast data for "${city}". Please try again later.`);
+    }
+  }
+};
+
+/**
+ * Get user's current location
+ * @returns {Promise} - Promise returning coordinates {lat, lon}
+ */
+export const getCurrentLocation = () => {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error('Geolocation is not supported by your browser'));
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          lat: position.coords.latitude,
+          lon: position.coords.longitude
+        });
+      },
+      (error) => {
+        console.error('Error getting current location:', error);
+        reject(new Error('Unable to retrieve your location. Please allow location access or search for a city manually.'));
+      },
+      { 
+        timeout: 10000, // 10 seconds timeout
+        enableHighAccuracy: true,
+        maximumAge: 0,
+        // The language of the permission prompt is controlled by the browser settings, not by this code
+        // Browser will show its default permission prompt in the language set in browser preferences
+        // Adding language parameter might help in some browsers
+        language: 'en-US'
+      }
+    );
+  });
+};
+
+/**
+ * Get weather data by coordinates
+ * @param {number} lat - Latitude
+ * @param {number} lon - Longitude
+ * @returns {Promise} - Promise returning weather data
+ */
+export const fetchWeatherDataByCoords = async (lat, lon) => {
+  try {
+    if (!lat || !lon) {
+      throw new Error('Coordinates are required');
+    }
+    
+    const response = await axios.get(`${BASE_URL}/weather`, {
+      params: {
+        lat,
+        lon,
+        appid: API_KEY,
+        lang: 'en',
+        units: 'metric'
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch weather data by coordinates:', error);
+    if (error.response && error.response.status === 401) {
+      throw new Error('API key is invalid. Please check your configuration.');
+    } else if (error.response && error.response.status === 429) {
+      throw new Error('API rate limit exceeded. Please try again later.');
+    } else if (!navigator.onLine) {
+      throw new Error('No internet connection. Please check your network and try again.');
+    } else {
+      throw new Error(`Unable to fetch weather data for your location. Please try again later.`);
+    }
+  }
+};
+
+/**
+ * Get forecast data by coordinates
+ * @param {number} lat - Latitude
+ * @param {number} lon - Longitude
+ * @returns {Promise} - Promise returning forecast data
+ */
+export const fetchForecastDataByCoords = async (lat, lon) => {
+  try {
+    if (!lat || !lon) {
+      throw new Error('Coordinates are required');
+    }
+    
+    const response = await axios.get(`${BASE_URL}/forecast`, {
+      params: {
+        lat,
+        lon,
+        appid: API_KEY,
+        lang: 'en',
+        units: 'metric',
+        cnt: 40 // Return 5-day forecast data with 3-hour intervals
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch forecast data by coordinates:', error);
+    if (error.response && error.response.status === 401) {
+      throw new Error('API key is invalid. Please check your configuration.');
+    } else if (error.response && error.response.status === 429) {
+      throw new Error('API rate limit exceeded. Please try again later.');
+    } else if (!navigator.onLine) {
+      throw new Error('No internet connection. Please check your network and try again.');
+    } else {
+      throw new Error(`Unable to fetch forecast data for your location. Please try again later.`);
+    }
+  }
+};
+
+/**
+ * Get hourly forecast data by coordinates
+ * @param {number} lat - Latitude
+ * @param {number} lon - Longitude
+ * @returns {Promise} - Promise returning hourly forecast data
+ */
+export const fetchHourlyForecastDataByCoords = async (lat, lon) => {
+  try {
+    if (!lat || !lon) {
+      throw new Error('Coordinates are required');
+    }
+    
+    const response = await axios.get(`${BASE_URL}/forecast`, {
+      params: {
+        lat,
+        lon,
+        appid: API_KEY,
+        lang: 'en',
+        units: 'metric',
+        cnt: 24 // Return 24-hour forecast data
+      }
+    });
+    
+    return response.data;
+  } catch (error) {
+    console.error('Failed to fetch hourly forecast data by coordinates:', error);
+    if (error.response && error.response.status === 401) {
+      throw new Error('API key is invalid. Please check your configuration.');
+    } else if (error.response && error.response.status === 429) {
+      throw new Error('API rate limit exceeded. Please try again later.');
+    } else if (!navigator.onLine) {
+      throw new Error('No internet connection. Please check your network and try again.');
+    } else {
+      throw new Error(`Unable to fetch hourly forecast data for your location. Please try again later.`);
+    }
+  }
+};
+
+/**
+ * Get the nearest city name based on coordinates
+ * This function is used for map click functionality, converting clicked coordinates to city name
+ * @param {number} lat - Latitude
+ * @param {number} lon - Longitude
+ * @returns {Promise} - Promise returning the city name
+ */
+export const getCityNameByCoords = async (lat, lon) => {
+  try {
+    if (!lat || !lon) {
+      throw new Error('Coordinates are required');
+    }
+    
+    // Use OpenWeatherMap's geocoding API to reverse lookup city name
+    const response = await axios.get(`${GEO_URL}/reverse`, {
+      params: {
+        lat,
+        lon,
+        limit: 1,
+        appid: API_KEY
+      }
+    });
+    
+    if (response.data && response.data.length > 0) {
+      const location = response.data[0];
+      // Return city name, add country code if available
+      return location.name;
+    } else {
+      throw new Error('No city found at these coordinates');
+    }
+  } catch (error) {
+    console.error('Failed to get city name by coordinates:', error);
+    if (error.response && error.response.status === 401) {
+      throw new Error('API key is invalid. Please check your configuration.');
+    } else if (error.response && error.response.status === 429) {
+      throw new Error('API rate limit exceeded. Please try again later.');
+    } else if (!navigator.onLine) {
+      throw new Error('No internet connection. Please check your network and try again.');
+    } else {
+      throw new Error(`Unable to find city at these coordinates. Please try a different location.`);
+    }
   }
 };

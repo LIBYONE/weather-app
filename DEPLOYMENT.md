@@ -1,83 +1,83 @@
-# 天气应用部署指南
+# Weather Application Deployment Guide
 
-本文档提供了将天气查询网站部署到公共可访问服务器的详细步骤，让所有人都能使用这个应用。
+This document provides detailed steps for deploying the weather query website to a publicly accessible server, allowing everyone to use this application.
 
-## 前期准备
+## Preparation
 
-1. 确保你有一个有效的 OpenWeatherMap API 密钥
-   - 如果没有，请前往 [OpenWeatherMap](https://openweathermap.org/) 注册并获取免费的 API 密钥
+1. Ensure you have a valid OpenWeatherMap API key
+   - If you don't have one, please visit [OpenWeatherMap](https://openweathermap.org/) to register and obtain a free API key
 
-2. 确保你的项目已经完成开发并能在本地正常运行
+2. Make sure your project has completed development and runs normally on your local machine
 
-## 环境变量配置
+## Environment Variable Configuration
 
-我们已经将 API 密钥从代码中移到环境变量中，这样可以更安全地部署应用：
+We have moved the API key from the code to environment variables, making the application deployment more secure:
 
-1. 本地开发时：
-   - 使用项目根目录下的 `.env` 文件（已创建）
-   - 确保 `.env` 文件包含你的 API 密钥：`VITE_APP_WEATHER_API_KEY=你的密钥`
+1. For local development:
+   - Use the `.env` file in the project root directory (already created)
+   - Ensure the `.env` file contains your API key: `VITE_APP_WEATHER_API_KEY=your_key`
 
-2. 部署到服务器时：
-   - 不要上传 `.env` 文件（已添加到 `.gitignore`）
-   - 在部署平台上设置环境变量 `VITE_APP_WEATHER_API_KEY`
+2. When deploying to a server:
+   - Do not upload the `.env` file (already added to `.gitignore`)
+   - Set the environment variable `VITE_APP_WEATHER_API_KEY` on the deployment platform
 
-## 构建项目
+## Building the Project
 
-在部署前，需要构建项目生成静态文件：
+Before deployment, you need to build the project to generate static files:
 
 ```bash
-# 安装依赖
+# Install dependencies
 npm install
 
-# 构建项目
+# Build the project
 npm run build
 ```
 
-构建完成后，`dist` 目录中将包含所有需要部署的静态文件。
+After the build is complete, the `dist` directory will contain all the static files needed for deployment.
 
-## 部署选项
+## Deployment Options
 
-### 1. Vercel（推荐）
+### 1. Vercel (Recommended)
 
-Vercel 是一个免费且易用的静态网站托管平台，特别适合 React 应用：
+Vercel is a free and easy-to-use static website hosting platform, especially suitable for React applications:
 
-1. 注册 [Vercel](https://vercel.com/) 账号
-2. 安装 Vercel CLI 或直接使用 GitHub 集成
-3. 部署步骤：
+1. Register for a [Vercel](https://vercel.com/) account
+2. Install the Vercel CLI or use GitHub integration directly
+3. Deployment steps:
    ```bash
-   # 安装 Vercel CLI
+   # Install Vercel CLI
    npm install -g vercel
    
-   # 登录
+   # Login
    vercel login
    
-   # 部署（在项目根目录下运行）
+   # Deploy (run in the project root directory)
    vercel
    ```
-4. 在 Vercel 项目设置中添加环境变量 `VITE_APP_WEATHER_API_KEY`
+4. Add the environment variable `VITE_APP_WEATHER_API_KEY` in the Vercel project settings
 
 ### 2. Netlify
 
-Netlify 也是一个优秀的静态网站托管平台：
+Netlify is also an excellent static website hosting platform:
 
-1. 注册 [Netlify](https://www.netlify.com/) 账号
-2. 可以通过 GitHub 集成或手动上传 `dist` 目录
-3. 在 Netlify 项目设置中添加环境变量 `VITE_APP_WEATHER_API_KEY`
+1. Register for a [Netlify](https://www.netlify.com/) account
+2. You can integrate with GitHub or manually upload the `dist` directory
+3. Add the environment variable `VITE_APP_WEATHER_API_KEY` in the Netlify project settings
 
 ### 3. GitHub Pages
 
-GitHub Pages 是另一个免费的静态网站托管选项：
+GitHub Pages is another free static website hosting option:
 
-1. 创建一个 GitHub 仓库
-2. 修改 `vite.config.js` 添加 base 配置（如果部署到非根目录）
+1. Create a GitHub repository
+2. Modify `vite.config.js` to add the base configuration (if deploying to a non-root directory)
    ```js
    export default defineConfig({
      plugins: [react()],
-     base: '/your-repo-name/',  // 替换为你的仓库名
-     // 其他配置...
+     base: '/your-repo-name/',  // Replace with your repository name
+     // Other configurations...
    })
    ```
-3. 使用 GitHub Actions 自动部署，创建 `.github/workflows/deploy.yml` 文件：
+3. Use GitHub Actions for automatic deployment, create a `.github/workflows/deploy.yml` file:
    ```yaml
    name: Deploy to GitHub Pages
    
@@ -106,35 +106,35 @@ GitHub Pages 是另一个免费的静态网站托管选项：
              branch: gh-pages
              folder: dist
    ```
-4. 在 GitHub 仓库设置中添加 Secret `WEATHER_API_KEY`
+4. Add the Secret `WEATHER_API_KEY` in your GitHub repository settings
 
-## 注意事项
+## Important Notes
 
-1. **API 密钥安全**：
-   - 永远不要在前端代码中硬编码 API 密钥
-   - 在生产环境中，考虑使用代理服务器转发 API 请求，以进一步保护 API 密钥
+1. **API Key Security**:
+   - Never hardcode API keys in your frontend code
+   - In a production environment, consider using a proxy server to forward API requests for better protection of your API key
 
-2. **CORS 问题**：
-   - 如果部署后遇到 CORS 问题，可能需要设置代理服务器或使用 CORS 代理服务
+2. **CORS Issues**:
+   - If you encounter CORS issues after deployment, you may need to set up a proxy server or use a CORS proxy service
 
-3. **API 使用限制**：
-   - 注意 OpenWeatherMap 免费计划的 API 调用限制
-   - 考虑实现缓存机制减少 API 调用次数
+3. **API Usage Limits**:
+   - Be aware of the API call limits in the OpenWeatherMap free plan
+   - Consider implementing caching mechanisms to reduce the number of API calls
 
-## 访问网站
+## Accessing the Website
 
-部署完成后，你将获得一个公开的 URL，任何人都可以通过这个 URL 访问你的天气查询网站。
+After deployment is complete, you will get a public URL that anyone can use to access your weather query website.
 
-例如：
+For example:
 - Vercel: `https://your-app-name.vercel.app`
 - Netlify: `https://your-app-name.netlify.app`
 - GitHub Pages: `https://username.github.io/your-repo-name/`
 
-## 故障排除
+## Troubleshooting
 
-如果部署后网站无法正常工作：
+If the website does not work properly after deployment:
 
-1. 检查环境变量是否正确设置
-2. 查看浏览器控制台是否有错误信息
-3. 确认 API 密钥是否有效
-4. 检查构建日志是否有错误
+1. Check if environment variables are set correctly
+2. Check the browser console for error messages
+3. Confirm that the API key is valid
+4. Check the build logs for errors

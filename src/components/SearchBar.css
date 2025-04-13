@@ -7,6 +7,8 @@
   display: flex;
   gap: 10px;
   position: relative;
+  justify-content: center;
+  align-items: center;
 }
 
 .search-input-container {
@@ -83,7 +85,7 @@
   background-color: #3d5166;
 }
 
-/* 响应式调整 */
+/* Responsive adjustments */
 @media (max-width: 480px) {
   .search-bar form {
     flex-direction: column;

@@ -195,7 +195,7 @@
   color: #f1f1f1;
 }
 
-/* 响应式调整 */
+/* Responsive adjustments */
 @media (max-width: 768px) {
   .weather-main {
     flex-direction: column;

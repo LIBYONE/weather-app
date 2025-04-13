@@ -4,7 +4,7 @@ import './WeatherAlert.css'
 function WeatherAlert({ alert }) {
   if (!alert) return null
 
-  // 格式化日期时间
+  // Format date and time
   const formatDateTime = (timestamp) => {
     const date = new Date(timestamp * 1000)
     return date.toLocaleString('en-US', {
